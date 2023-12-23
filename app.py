@@ -1,11 +1,16 @@
 import streamlit as st
 from twilio.rest import Client
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Twilio credentials
-TWILIO_ACCOUNT_SID = 'your_account_sid'
-TWILIO_AUTH_TOKEN = 'your_auth_token'
-TWILIO_PHONE_NUMBER = 'your_twilio_phone_number'
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
 
 # Initialize Twilio client
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
@@ -20,6 +25,15 @@ def main():
     # Create tabs
     tabs = ["Text Message Automation", "Client Calling", "Client Info"]
     choice = st.sidebar.selectbox("Select Tab", tabs)
+
+    # Sidebar for Twilio credentials
+    st.sidebar.subheader("Twilio Credentials")
+    TWILIO_ACCOUNT_SID = st.sidebar.text_input("Account SID", os.environ.get('TWILIO_ACCOUNT_SID'))
+    TWILIO_AUTH_TOKEN = st.sidebar.text_input("Auth Token", os.environ.get('TWILIO_AUTH_TOKEN'), type='password')
+    TWILIO_PHONE_NUMBER = st.sidebar.text_input("Phone Number", os.environ.get('TWILIO_PHONE_NUMBER'))
+
+    # Update Twilio client with user input
+    twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     if choice == "Text Message Automation":
         text_message_automation()
@@ -142,3 +156,4 @@ def add_client(name, phone):
 # Run the app
 if __name__ == "__main__":
     main()
+
